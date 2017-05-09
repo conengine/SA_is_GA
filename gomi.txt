@@ -1,0 +1,53 @@
+This is coqdoc version 8.5pl3, compiled on Apr 17 2017 14:56:41
+
+Usage: coqdoc <options and files>
+  --html               produce a HTML document (default)
+  --latex              produce a LaTeX document
+  --texmacs            produce a TeXmacs document
+  --raw                produce a text document
+  --dvi                output the DVI
+  --ps                 output the PostScript
+  --pdf                output the Pdf
+  --stdout             write output to stdout
+  -o <file>            write output in file <file>
+  -d <dir>             output files into directory <dir>
+  -g                   (gallina) skip proofs
+  -s                   (short) no titles for files
+  -l                   light mode (only defs and statements)
+  -t <string>          give a title to the document
+  --body-only          suppress LaTeX/HTML header and trailer
+  --with-header <file> prepend <file> as html reader
+  --with-footer <file> append <file> as html footer
+  --no-index           do not output the index
+  --multi-index        index split in multiple files
+  --index <string>     set index name (default is index)
+  --toc                output a table of contents
+  --vernac <file>      consider <file> as a .v file
+  --tex <file>         consider <file> as a .tex file
+  -p <string>          insert <string> in LaTeX preamble
+  --files-from <file>  read file names to process in <file>
+  --glob-from <file>   read globalization information from <file>
+  --no-glob            don't use any globalization information (no links will be inserted at identifiers)
+  --quiet              quiet mode (default)
+  --verbose            verbose mode
+  --no-externals       no links to Coq standard library
+  --external <url> <d> set URL for external library d
+  --coqlib <url>       set URL for Coq standard library
+                       (default is http://coq.inria.fr/distrib/8.5pl3/stdlib/)
+  --boot               run in boot mode
+  --coqlib_path <dir>  set the path where Coq files are installed
+  -R <dir> <coqdir>    map physical dir to Coq dir
+  -Q <dir> <coqdir>    map physical dir to Coq dir
+  --latin1             set ISO-8859-1 mode
+  --utf8               set UTF-8 mode
+  --charset <string>   set HTML charset
+  --inputenc <string>  set LaTeX input encoding
+  --interpolate        try to typeset identifiers in comments using definitions in the same module
+  --parse-comments     parse regular comments
+  --plain-comments     consider comments as non-literate text
+  --toc-depth <int>    don't include TOC entries for sections below level <int>
+  --no-lib-name        don't display "Library" before library names in the toc
+  --lib-name <string>  call top level toc entries <string> instead of "Library"
+  --lib-subtitles      first line comments of the form (** * ModuleName : text *) will be interpreted as subtitles
+  --inline-notmono     use a proportional width font for inline code (possibly with a different color)
+
