@@ -1,4 +1,3 @@
-# good
-_indeed_
-- the anser is yes
-1. or else?
+# A formal proof of optimization methods.
+
+Cf. https://github.com/STakashimizu/EEM/wiki
