@@ -1,4 +1,5 @@
 * TODO make a makefile
-* 
+  * What is known to work?
+
 
   
