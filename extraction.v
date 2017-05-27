@@ -1,5 +1,5 @@
-Require Import PrImp.
-Require Import Maps.
+Require Import VPHL.PrImp.
+Require Import sf.Maps.
 
 Fixpoint ceval_step (st : state) (c : com) (i : nat) : option state :=
   match i with
