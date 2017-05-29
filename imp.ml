@@ -8,6 +8,16 @@ type 'a option =
 type ('a, 'b) prod =
 | Pair of 'a * 'b
 
+(** val fst : ('a1, 'a2) prod -> 'a1 **)
+
+let fst = function
+| Pair (x, _) -> x
+
+(** val snd : ('a1, 'a2) prod -> 'a2 **)
+
+let snd = function
+| Pair (_, y) -> y
+
 type 'a list =
 | Nil
 | Cons of 'a * 'a list
@@ -32,11 +42,13 @@ let rec mul = ( * )
 (** val sub : int -> int -> int **)
 
 let rec sub n0 m =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ ->
     n0)
     (fun k ->
-    (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+    (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
       (fun _ ->
       n0)
       (fun l ->
@@ -62,11 +74,13 @@ module Nat =
   (** val leb : int -> int -> bool **)
 
   let rec leb n0 m =
-    (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+    (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
       (fun _ ->
       true)
       (fun n' ->
-      (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+      (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
         (fun _ ->
         false)
         (fun m' ->
@@ -255,11 +269,21 @@ type aid =
   int
   (* singleton inductive, whose constructor was Aid *)
 
+(** val beq_aid : aid -> aid -> bool **)
+
+let beq_aid i1 i2 =
+  Nat.eqb i1 i2
+
 type bid =
   int
   (* singleton inductive, whose constructor was Bid *)
 
 type state = (aid -> int, bid -> bool) prod
+
+(** val update : state -> aid -> int -> state **)
+
+let update st x n0 =
+  Pair ((fun x' -> if beq_aid x x' then n0 else fst st x'), (snd st))
 
 type r (* AXIOM TO BE REALIZED *)
 
@@ -269,6 +293,16 @@ type aexp =
 | APlus of aexp * aexp
 | AMinus of aexp * aexp
 | AMult of aexp * aexp
+
+(** val aeval : aexp -> state -> int **)
+
+let rec aeval a st =
+  match a with
+  | ANum n0 -> n0
+  | AId x -> fst st x
+  | APlus (a1, a2) -> add (aeval a1 st) (aeval a2 st)
+  | AMinus (a1, a2) -> sub (aeval a1 st) (aeval a2 st)
+  | AMult (a1, a2) -> mul (aeval a1 st) (aeval a2 st)
 
 type bexp =
 | BTrue
@@ -1460,7 +1494,8 @@ type 't parser0 = token list -> ('t, token list) prod optionE
     prod optionE **)
 
 let rec many_helper p acc steps xs =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ -> NoneE (String ('T', (String ('o', (String ('o', (String (' ',
     (String ('m', (String ('a', (String ('n', (String ('y', (String (' ',
     (String ('r', (String ('e', (String ('c', (String ('u', (String ('r',
@@ -1551,7 +1586,8 @@ let parseNumber = function
     int -> token list -> (aexp0, token list) prod optionE **)
 
 let rec parsePrimaryExp steps xs =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ -> NoneE (String ('T', (String ('o', (String ('o', (String (' ',
     (String ('m', (String ('a', (String ('n', (String ('y', (String (' ',
     (String ('r', (String ('e', (String ('c', (String ('u', (String ('r',
@@ -1581,7 +1617,8 @@ let rec parsePrimaryExp steps xs =
     int -> token list -> (aexp0, token list) prod optionE **)
 
 and parseProductExp steps xs =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ -> NoneE (String ('T', (String ('o', (String ('o', (String (' ',
     (String ('m', (String ('a', (String ('n', (String ('y', (String (' ',
     (String ('r', (String ('e', (String ('c', (String ('u', (String ('r',
@@ -1606,7 +1643,8 @@ and parseProductExp steps xs =
     int -> token list -> (aexp0, token list) prod optionE **)
 
 and parseSumExp steps xs =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ -> NoneE (String ('T', (String ('o', (String ('o', (String (' ',
     (String ('m', (String ('a', (String ('n', (String ('y', (String (' ',
     (String ('r', (String ('e', (String ('c', (String ('u', (String ('r',
@@ -1649,7 +1687,8 @@ let parseAExp =
     int -> token list -> (bexp0, token list) prod optionE **)
 
 let rec parseAtomicExp steps xs =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ -> NoneE (String ('T', (String ('o', (String ('o', (String (' ',
     (String ('m', (String ('a', (String ('n', (String ('y', (String (' ',
     (String ('r', (String ('e', (String ('c', (String ('u', (String ('r',
@@ -1717,7 +1756,8 @@ let rec parseAtomicExp steps xs =
     int -> token list -> (bexp0, token list) prod optionE **)
 
 and parseConjunctionExp steps xs =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ -> NoneE (String ('T', (String ('o', (String ('o', (String (' ',
     (String ('m', (String ('a', (String ('n', (String ('y', (String (' ',
     (String ('r', (String ('e', (String ('c', (String ('u', (String ('r',
@@ -1747,7 +1787,8 @@ let parseBExp =
     int -> token list -> (com0, token list) prod optionE **)
 
 let rec parseSimpleCommand steps xs =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ -> NoneE (String ('T', (String ('o', (String ('o', (String (' ',
     (String ('m', (String ('a', (String ('n', (String ('y', (String (' ',
     (String ('r', (String ('e', (String ('c', (String ('u', (String ('r',
@@ -1815,7 +1856,8 @@ let rec parseSimpleCommand steps xs =
     int -> token list -> (com0, token list) prod optionE **)
 
 and parseSequencedCommand steps xs =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ -> NoneE (String ('T', (String ('o', (String ('o', (String (' ',
     (String ('m', (String ('a', (String ('n', (String ('y', (String (' ',
     (String ('r', (String ('e', (String ('c', (String ('u', (String ('r',
@@ -2096,10 +2138,13 @@ let parse str =
 
 (** val ceval_step : state -> com -> int -> state option **)
 
-let rec ceval_step st _ i =
-  (fun zero succ n ->       if n=0 then zero () else succ (n-1))
+let rec ceval_step st c i =
+  (fun zero succ n ->
+      if n=0 then zero () else succ (n-1))
     (fun _ ->
     None)
-    (fun _ -> Some
-    st)
+    (fun _ ->
+    match c with
+    | Assign (l, a1) -> Some (update st l (aeval a1 st))
+    | _ -> Some st)
     i

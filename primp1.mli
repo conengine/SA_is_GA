@@ -13,15 +13,34 @@ type 'a option =
 type ('a, 'b) prod =
 | Pair of 'a * 'b
 
+val fst : ('a1, 'a2) prod -> 'a1
+
+val snd : ('a1, 'a2) prod -> 'a2
+
+val add : nat -> nat -> nat
+
+val mul : nat -> nat -> nat
+
+val sub : nat -> nat -> nat
+
+module Nat :
+ sig
+  val eqb : nat -> nat -> bool
+ end
+
 type aid =
   nat
   (* singleton inductive, whose constructor was Aid *)
+
+val beq_aid : aid -> aid -> bool
 
 type bid =
   nat
   (* singleton inductive, whose constructor was Bid *)
 
 type state = (aid -> nat, bid -> bool) prod
+
+val update : state -> aid -> nat -> state
 
 type r (* AXIOM TO BE REALIZED *)
 
@@ -31,6 +50,8 @@ type aexp =
 | APlus of aexp * aexp
 | AMinus of aexp * aexp
 | AMult of aexp * aexp
+
+val aeval : aexp -> state -> nat
 
 type bexp =
 | BTrue

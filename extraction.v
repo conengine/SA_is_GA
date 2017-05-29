@@ -1,19 +1,70 @@
 Require Import VPHL.PrImp.
-Require Import Sf.Maps.
+(* Require Import Sf.Maps. *)
 
+
+Print aeval.
+(* aeval =  *)
+(* fix aeval (a : aexp) (st : state) {struct a} : nat := *)
+(*   match a with *)
+(*   | ANum n => n *)
+(*   | AId x => fst st x *)
+(*   | APlus a1 a2 => (aeval a1 st + aeval a2 st)%nat *)
+(*   | AMinus a1 a2 => (aeval a1 st - aeval a2 st)%nat *)
+(*   | AMult a1 a2 => (aeval a1 st * aeval a2 st)%nat *)
+(*   end *)
+(*      : aexp -> state -> nat *)
+Print aid.
+(* Inductive aid : Set :=  Aid : nat -> aid *)
+Print aexp.
+(* Inductive aexp : Set := *)
+(*     ANum : nat -> aexp *)
+(*   | AId : aid -> aexp *)
+(*   | APlus : aexp -> aexp -> aexp *)
+(*   | AMinus : aexp -> aexp -> aexp *)
+(*   | AMult : aexp -> aexp -> aexp *)
+Print bexp.
+(* Inductive bexp : Set := *)
+(*     BTrue : bexp *)
+(*   | BFalse : bexp *)
+(*   | BId : bid -> bexp *)
+(*   | BEq : aexp -> aexp -> bexp *)
+(*   | BLe : aexp -> aexp -> bexp *)
+(*   | BNot : bexp -> bexp *)
+(*   | BAnd : bexp -> bexp -> bexp *)
+Print com.
+(* Inductive com : Set := *)
+(*     Skip : com *)
+(*   | Assign : aid -> aexp -> com *)
+(*   | BAssign : bid -> bexp -> com *)
+(*   | Seq : com -> com -> com *)
+(*   | If : bid -> com -> com -> com *)
+(*   | While : bid -> com -> com *)
+(*   | Toss : forall p : R, 0 < p < 1 -> aid -> com *)
+(*   | BToss : forall p : R, 0 < p < 1 -> bid -> com *)
+Print aeval.
+(* aeval =  *)
+(* fix aeval (a : aexp) (st : state) {struct a} : nat := *)
+(*   match a with *)
+(*   | ANum n => n *)
+(*   | AId x => fst st x *)
+(*   | APlus a1 a2 => (aeval a1 st + aeval a2 st)%nat *)
+(*   | AMinus a1 a2 => (aeval a1 st - aeval a2 st)%nat *)
+(*   | AMult a1 a2 => (aeval a1 st * aeval a2 st)%nat *)
+(*   end *)
+(*      : aexp -> state -> nat *)
 Fixpoint ceval_step (st : state) (c : com) (i : nat) : option state :=
   match i with
     | O    => None
     | S i' => match c with
-               | Skip => Some st
-               | _ => Some st 
-                 (* | l ::= a1 => *)
-                 (*   Some (t_update st l (aeval st a1) )*)
-                               
+               | Skip    => Some st
+               | l ::= a1 =>
+                 (* Some (t_update st l (aeval st a1) ) *)
+                 Some (update st l (aeval a1 st) )
+               | _ => Some st
              end
   end.
 
-Extraction "primp1.ml" ceval_step.
+Extraction "imp1.ml" ceval_step.
 
 Extract Inductive bool => "bool" [ "true" "false" ].
 

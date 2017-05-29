@@ -2,8 +2,6 @@ type bool =
 | True
 | False
 
-val negb : bool -> bool
-
 type nat =
 | O
 | S of nat
@@ -12,9 +10,12 @@ type 'a option =
 | Some of 'a
 | None
 
-type sumbool =
-| Left
-| Right
+type ('a, 'b) prod =
+| Pair of 'a * 'b
+
+val fst : ('a1, 'a2) prod -> 'a1
+
+val snd : ('a1, 'a2) prod -> 'a2
 
 val add : nat -> nat -> nat
 
@@ -22,62 +23,53 @@ val mul : nat -> nat -> nat
 
 val sub : nat -> nat -> nat
 
-val bool_dec : bool -> bool -> sumbool
-
 module Nat :
  sig
   val eqb : nat -> nat -> bool
-
-  val leb : nat -> nat -> bool
  end
 
-type ascii =
-| Ascii of bool * bool * bool * bool * bool * bool * bool * bool
+type aid =
+  nat
+  (* singleton inductive, whose constructor was Aid *)
 
-val ascii_dec : ascii -> ascii -> sumbool
+val beq_aid : aid -> aid -> bool
 
-type string =
-| EmptyString
-| String of ascii * string
+type bid =
+  nat
+  (* singleton inductive, whose constructor was Bid *)
 
-val string_dec : string -> string -> sumbool
+type state = (aid -> nat, bid -> bool) prod
 
-type id =
-  string
-  (* singleton inductive, whose constructor was Id *)
+val update : state -> aid -> nat -> state
 
-val beq_id : id -> id -> bool
-
-type 'a total_map = id -> 'a
-
-val t_update : 'a1 total_map -> id -> 'a1 -> id -> 'a1
-
-type state = nat total_map
+type r (* AXIOM TO BE REALIZED *)
 
 type aexp =
 | ANum of nat
-| AId of id
+| AId of aid
 | APlus of aexp * aexp
 | AMinus of aexp * aexp
 | AMult of aexp * aexp
 
+val aeval : aexp -> state -> nat
+
 type bexp =
 | BTrue
 | BFalse
+| BId of bid
 | BEq of aexp * aexp
 | BLe of aexp * aexp
 | BNot of bexp
 | BAnd of bexp * bexp
 
-val aeval : state -> aexp -> nat
-
-val beval : state -> bexp -> bool
-
 type com =
-| CSkip
-| CAss of id * aexp
-| CSeq of com * com
-| CIf of bexp * com * com
-| CWhile of bexp * com
+| Skip
+| Assign of aid * aexp
+| BAssign of bid * bexp
+| Seq of com * com
+| If of bid * com * com
+| While of bid * com
+| Toss of r * aid
+| BToss of r * bid
 
 val ceval_step : state -> com -> nat -> state option
