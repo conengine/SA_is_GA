@@ -6,16 +6,14 @@ $\today$
 2. EEM
 3. SA=GA
 
-# In the morning
+# In the morningg
 
 - Eat eggs
-- Drink coffee
+- Drink coffeee
 - inf:
 - $\infty$
 - today:
 - $\today$
-
-$\today$
 
 # In the evening
 
