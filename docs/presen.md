@@ -1,8 +1,10 @@
 % GA = SA
 % STakashimizu
-<!-- % March 22, 2005 -->
 $\today$
-
+# TOC
+1. CertCrypt 
+2. EEM
+3. SA=GA
 
 # In the morning
 
