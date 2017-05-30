@@ -100,6 +100,8 @@ type bid =
 
 type state = (aid -> int, bid -> bool) prod
 
+val empty_state : state
+
 val update : state -> aid -> int -> state
 
 type r (* AXIOM TO BE REALIZED *)
@@ -135,14 +137,6 @@ type com =
 type id =
   string
   (* singleton inductive, whose constructor was Id *)
-
-type 'a total_map = id -> 'a
-
-val t_empty : 'a1 -> 'a1 total_map
-
-type state0 = int total_map
-
-val empty_state : state0
 
 type aexp0 =
 | ANum0 of int

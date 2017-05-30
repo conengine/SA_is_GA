@@ -52,6 +52,35 @@ Print aeval.
 (*   | AMult a1 a2 => (aeval a1 st * aeval a2 st)%nat *)
 (*   end *)
 (*      : aexp -> state -> nat *)
+Print state.
+(* state = ((aid -> nat) * (bid -> bool))%type *)
+(*      : Set *)
+
+Notation "'LETOPT' x <== e1 'IN' e2"
+   := (match e1 with
+         | Some x => e2
+         | None => None
+       end)
+   (right associativity, at level 60).
+
+
+(* 
+(** Notations *) 
+Notation "x '::=' a" :=
+  (Assign x a) (at level 60).
+Notation "y ':==' b" :=
+  (BAssign y b) (at level 60).
+Notation "c1 ; c2" :=
+  (Seq c1 c2) (at level 80, right associativity).
+Notation "'WHILE' x 'DO' c 'END'" :=
+  (While x c) (at level 80, right associativity).
+Notation "'IFB' y 'THEN' c1 'ELSE' c2 'FI'" :=
+  (If y c1 c2) (at level 80, right associativity).
+Notation "x '$=(' p ',' v ')'" :=
+  (Toss p v x) (at level 60, right associativity).
+Notation "y '$=[' p ',' v ']'" :=
+  (BToss p v y) (at level 60, right associativity).
+ *)
 Fixpoint ceval_step (st : state) (c : com) (i : nat) : option state :=
   match i with
     | O    => None
@@ -60,7 +89,10 @@ Fixpoint ceval_step (st : state) (c : com) (i : nat) : option state :=
                | l ::= a1 =>
                  (* Some (t_update st l (aeval st a1) ) *)
                  Some (update st l (aeval a1 st) )
-               | _ => Some st
+               | c1 ; c2 =>
+                 LETOPT st' <== ceval_step st c1 i' IN
+                 ceval_step st' c2 i'
+               | _        => None
              end
   end.
 
@@ -131,7 +163,7 @@ Extract Inductive sumbool => "bool" ["true" "false"].
 
 (** The extraction is the same as always. *)
 
-Require Import Imp.
+(* Require Import Imp. *)
 Require Import ImpParser.
 Extraction "imp.ml" empty_state ceval_step parse.
 

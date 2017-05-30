@@ -280,6 +280,11 @@ type bid =
 
 type state = (aid -> int, bid -> bool) prod
 
+(** val empty_state : state **)
+
+let empty_state =
+  Pair ((fun _ -> 0), (fun _ -> false))
+
 (** val update : state -> aid -> int -> state **)
 
 let update st x n0 =
@@ -326,20 +331,6 @@ type com =
 type id =
   string
   (* singleton inductive, whose constructor was Id *)
-
-type 'a total_map = id -> 'a
-
-(** val t_empty : 'a1 -> 'a1 total_map **)
-
-let t_empty v _ =
-  v
-
-type state0 = int total_map
-
-(** val empty_state : state0 **)
-
-let empty_state =
-  t_empty 0
 
 type aexp0 =
 | ANum0 of int
@@ -2143,8 +2134,13 @@ let rec ceval_step st c i =
       if n=0 then zero () else succ (n-1))
     (fun _ ->
     None)
-    (fun _ ->
+    (fun i' ->
     match c with
+    | Skip -> Some st
     | Assign (l, a1) -> Some (update st l (aeval a1 st))
-    | _ -> Some st)
+    | Seq (c1, c2) ->
+      (match ceval_step st c1 i' with
+       | Some st' -> ceval_step st' c2 i'
+       | None -> None)
+    | _ -> None)
     i

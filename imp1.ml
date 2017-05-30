@@ -128,7 +128,12 @@ type com =
 
 let rec ceval_step st c = function
 | O -> None
-| S _ ->
+| S i' ->
   (match c with
+   | Skip -> Some st
    | Assign (l, a1) -> Some (update st l (aeval a1 st))
-   | _ -> Some st)
+   | Seq (c1, c2) ->
+     (match ceval_step st c1 i' with
+      | Some st' -> ceval_step st' c2 i'
+      | None -> None)
+   | _ -> None)
