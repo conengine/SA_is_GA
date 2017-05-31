@@ -1,3 +1,5 @@
+val negb : bool -> bool
+
 type 'a option =
 | Some of 'a
 | None
@@ -20,6 +22,8 @@ module Nat :
   val eqb : int -> int -> bool
  end
 
+val ble_nat : int -> int -> bool
+
 type aid =
   int
   (* singleton inductive, whose constructor was Aid *)
@@ -30,9 +34,13 @@ type bid =
   int
   (* singleton inductive, whose constructor was Bid *)
 
+val beq_bid : bid -> bid -> bool
+
 type state = (aid -> int, bid -> bool) prod
 
 val update : state -> aid -> int -> state
+
+val update_b : state -> bid -> bool -> state
 
 type r (* AXIOM TO BE REALIZED *)
 
@@ -53,6 +61,8 @@ type bexp =
 | BLe of aexp * aexp
 | BNot of bexp
 | BAnd of bexp * bexp
+
+val beval : bexp -> state -> bool
 
 type com =
 | Skip

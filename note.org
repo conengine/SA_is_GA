@@ -1,2 +1,3 @@
 * TODO Modity parser.v
+  - BTW without parser, a driver still can make, while parsing nor lexing are not formally verified.  
 * Is there a convert function from aexp to bexp ? 		     :ENIGMA:

@@ -2,6 +2,12 @@ type bool =
 | True
 | False
 
+(** val negb : bool -> bool **)
+
+let negb = function
+| True -> False
+| False -> True
+
 type nat =
 | O
 | S of nat
@@ -63,6 +69,16 @@ module Nat =
        | S m' -> eqb n' m')
  end
 
+(** val ble_nat : nat -> nat -> bool **)
+
+let rec ble_nat n m =
+  match n with
+  | O -> True
+  | S n' ->
+    (match m with
+     | O -> False
+     | S m' -> ble_nat n' m')
+
 type aid =
   nat
   (* singleton inductive, whose constructor was Aid *)
@@ -76,6 +92,11 @@ type bid =
   nat
   (* singleton inductive, whose constructor was Bid *)
 
+(** val beq_bid : bid -> bid -> bool **)
+
+let beq_bid i1 i2 =
+  Nat.eqb i1 i2
+
 type state = (aid -> nat, bid -> bool) prod
 
 (** val update : state -> aid -> nat -> state **)
@@ -85,6 +106,14 @@ let update st x n =
     match beq_aid x x' with
     | True -> n
     | False -> fst st x'), (snd st))
+
+(** val update_b : state -> bid -> bool -> state **)
+
+let update_b st y b =
+  Pair ((fst st), (fun y' ->
+    match beq_bid y y' with
+    | True -> b
+    | False -> snd st y'))
 
 type r (* AXIOM TO BE REALIZED *)
 
@@ -114,6 +143,21 @@ type bexp =
 | BNot of bexp
 | BAnd of bexp * bexp
 
+(** val beval : bexp -> state -> bool **)
+
+let rec beval b st =
+  match b with
+  | BTrue -> True
+  | BFalse -> False
+  | BId y -> snd st y
+  | BEq (a1, a2) -> Nat.eqb (aeval a1 st) (aeval a2 st)
+  | BLe (a1, a2) -> ble_nat (aeval a1 st) (aeval a2 st)
+  | BNot b1 -> negb (beval b1 st)
+  | BAnd (b1, b2) ->
+    (match beval b1 st with
+     | True -> beval b2 st
+     | False -> False)
+
 type com =
 | Skip
 | Assign of aid * aexp
@@ -132,8 +176,10 @@ let rec ceval_step st c = function
   (match c with
    | Skip -> Some st
    | Assign (l, a1) -> Some (update st l (aeval a1 st))
+   | BAssign (l, b1) -> Some (update_b st l (beval b1 st))
    | Seq (c1, c2) ->
      (match ceval_step st c1 i' with
       | Some st' -> ceval_step st' c2 i'
       | None -> None)
+   | BToss (_, y) -> Some (update_b st y True)
    | _ -> None)

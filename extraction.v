@@ -64,37 +64,68 @@ Notation "'LETOPT' x <== e1 'IN' e2"
    (right associativity, at level 60).
 
 
-(* 
-(** Notations *) 
-Notation "x '::=' a" :=
-  (Assign x a) (at level 60).
-Notation "y ':==' b" :=
-  (BAssign y b) (at level 60).
-Notation "c1 ; c2" :=
-  (Seq c1 c2) (at level 80, right associativity).
-Notation "'WHILE' x 'DO' c 'END'" :=
-  (While x c) (at level 80, right associativity).
-Notation "'IFB' y 'THEN' c1 'ELSE' c2 'FI'" :=
-  (If y c1 c2) (at level 80, right associativity).
-Notation "x '$=(' p ',' v ')'" :=
-  (Toss p v x) (at level 60, right associativity).
-Notation "y '$=[' p ',' v ']'" :=
-  (BToss p v y) (at level 60, right associativity).
- *)
+
+(* Notation "x '::=' a" := *)
+(*   (Assign x a) (at level 60). *)
+(* Assign : aid -> aexp -> com *)
+
+(* Notation "y ':==' b" := *)
+(*   (BAssign y b) (at level 60). *)
+(* BAssign : bid -> bexp -> com *)
+
+(* Notation "c1 ; c2" := *)
+(*   (Seq c1 c2) (at level 80, right associativity). *)
+(* Seq : com -> com -> com *)
+
+(* Notation "'WHILE' x 'DO' c 'END'" := *)
+(*   (While x c) (at level 80, right associativity). *)
+
+(* Notation "'IFB' y 'THEN' c1 'ELSE' c2 'FI'" := *)
+(*   (If y c1 c2) (at level 80, right associativity). *)
+
+(* Notation "x '$=(' p ',' v ')'" := *)
+(*   (Toss p v x) (at level 60, right associativity). *)
+
+(* Notation "y '$=[' p ',' v ']'" := *)
+(*   (BToss p v y) (at level 60, right associativity). *)
+(* BToss : forall p : R, 0 < p < 1 -> bid -> com *)
+
+
 Fixpoint ceval_step (st : state) (c : com) (i : nat) : option state :=
   match i with
     | O    => None
     | S i' => match c with
-               | Skip    => Some st
-               | l ::= a1 =>
-                 (* Some (t_update st l (aeval st a1) ) *)
-                 Some (update st l (aeval a1 st) )
-               | c1 ; c2 =>
+               | Skip        =>
+                 Some st
+               | l ::= a1     =>
+                 Some (update st l (aeval a1 st))
+               | l :== b1     =>
+                 Some (update_b st l (beval b1 st))
+               | c1 ; c2     =>
                  LETOPT st' <== ceval_step st c1 i' IN
                  ceval_step st' c2 i'
-               | _        => None
+               | BToss p v y =>
+                 Some (update_b st y true)
+               | _           => None
              end
   end.
+
+Compute ceval_step empty_state (Seq Skip Skip) 777.
+     (* = Some (fun _ : aid => 0%nat, fun _ : bid => false) *)
+Compute ceval_step empty_state (Assign (Aid 2) (ANum 13)) 777.
+     (* = Some *)
+     (*     (fun x : aid => *)
+     (*      if *)
+     (*       match x with *)
+     (*       | Aid 0%nat => false *)
+     (*       | Aid 1%nat => false *)
+     (*       | Aid 2%nat => true *)
+     (*       | Aid (S (S (S _))) => false *)
+     (*       end *)
+     (*      then 13%nat *)
+     (*      else 0%nat, fun _ : bid => false) *)
+     (* : option state *)
+
 
 Extraction "imp1.ml" ceval_step.
 
@@ -163,7 +194,8 @@ Extract Inductive sumbool => "bool" ["true" "false"].
 
 (** The extraction is the same as always. *)
 
+
 (* Require Import Imp. *)
-Require Import ImpParser.
-Extraction "imp.ml" empty_state ceval_step parse.
+(* Require Import ImpParser. *)
+Extraction "imp.ml" empty_state ceval_step (* parse *).
 

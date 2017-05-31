@@ -4,6 +4,33 @@ open Imp;;
 (* #load "imp.cmo";; *)
 (* #use "topfind";; *)
 
+
+let st0 = empty_state;;
+let fuel = 7;;
+let st1 = ceval_step st0 Skip fuel;; 
+
+let st1a = ceval_step st0 (Seq (Skip, Skip)) fuel;;
+let st1b = ceval_step st0 (Assign (3, (ANum 777))) fuel;;
+let st1c = ceval_step st0 (Assign (1, (ANum 777))) fuel;;
+
+let f (Some x) = x;; 
+
+let g (Pair (a,b)) = a;;
+
+let tes st c fuel = match ceval_step st c fuel with
+    Some st -> print_endline ("Result: [" ^ string_of_int ((fst st)0) 
+                               ^ " " ^     string_of_int ((fst st)1) 
+                               ^ " " ^     string_of_int ((fst st)2) 
+                               ^ " " ^     string_of_int ((fst st)3) 
+                               ^ " ...]")
+  | None -> print_endline "err.";;
+
+let _ = tes st0 (Seq (Skip, Skip)) fuel;;
+let _ = tes st0 (Assign (3, (ANum 777))) fuel;;
+
+
+let cs3 = match cs2 777 with
+  Some (Pair (a, b)) -> (a,b);;
 let explode s =
   let rec exp i l =
     if i < 0 then l else exp (i - 1) (s.[i] :: l) in
@@ -28,17 +55,6 @@ let _ = bb;;
 let hoge = String ('b', String ('a', EmptyString));;
 let hoge2 = tweak_string "abc";;
 
-
-let st0 = empty_state;;
-
-let st1 = ceval_step st0 Skip 3;; 
-
-let st1a = ceval_step st0 (Seq (Skip, Skip)) 4;;
-
-
-
-let cs3 = match cs2 777 with
-  Some (Pair (a, b)) -> (a,b);;
 
 let test s =
   print_endline s;
