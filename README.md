@@ -1,3 +1,6 @@
+"_Algorithms are the computational content of proofs_."  -- Robert Harper 
+"_Consensus are the human content of proofs_."  -- Unknown
+
 # A formal proof of "GA = SA"
 - Cf. [EEM](https://github.com/STakashimizu/EEM/wiki)
 - Core language is R.Robert & S.Zdancewic's [PrImp](https://github.com/rnrand/VPHL).
