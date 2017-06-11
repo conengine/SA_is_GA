@@ -1,6 +1,3 @@
-"_Algorithms are the computational content of proofs_."  --- Robert Harper  
-"_Proofs and semantics are the social content of consensus._"  --- Some Cat
-
 # A formal proof of "GA = SA"
 - Cf. [EEM](https://github.com/STakashimizu/EEM/wiki)
 - Core language is R.Robert & S.Zdancewic's [PrImp](https://github.com/rnrand/VPHL).
