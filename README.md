@@ -1,5 +1,5 @@
 "_Algorithms are the computational content of proofs_."  --- Robert Harper  
-"_Consensus is the human content of proofs_."  --- Some cat
+"_Proofs are a social content of consensus._"  --- Some cat
 
 # A formal proof of "GA = SA"
 - Cf. [EEM](https://github.com/STakashimizu/EEM/wiki)
